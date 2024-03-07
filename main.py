@@ -14,7 +14,9 @@ app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 @app.route('/<title>')
 @app.route('/index/<title>')
 def index(title="Колонизация Марса"):
-    return render_template("base.html", title=title)
+    db_sess = db_session.create_session()
+    works = db_sess.query(Jobs).all()
+    return render_template("works_list.html", title=title, works_list=works)
 
 
 @app.route("/training/<prof>")
@@ -77,38 +79,7 @@ def rooms(peoples=None):
     return render_template("rooms.html", peoples=peoples, title="По Каютам!")
 
 
-def add_user(surname, name, age, position, speciality, address, email):
-    try:
-        user = User()
-        user.surname = surname
-        user.name = name
-        user.age = age
-        user.position = position
-        user.speciality = speciality
-        user.address = address
-        user.email = email
-        db_sess = db_session.create_session()
-        db_sess.add(user)
-        db_sess.commit()
-    except sqlalchemy.exc.IntegrityError as e:
-        print("Такой e-mail уже есть")
-
-
-def add_job(team_leader, job, work_size, collaborators, start_date, is_finished):
-    jobs = Jobs()
-    jobs.team_leader = team_leader
-    jobs.job = job
-    jobs.work_size = work_size
-    jobs.collaborators = collaborators
-    jobs.start_date = start_date
-    jobs.is_finished = is_finished
-    db_sess = db_session.create_session()
-    db_sess.add(jobs)
-    db_sess.commit()
 
 if __name__ == '__main__':
     db_session.global_init("db/mars_explorer.db")
-    if input("Введите пустую строку чтобы не вводить изменения в БД:"):
-        add_job(1, "deployment of residential modules 1 and 2", 15, '2, 3',
-                None, False)
     app.run(port=5000, host='127.0.0.1')
