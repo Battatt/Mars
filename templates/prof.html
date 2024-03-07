@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div align="center">
+        {% if prof == 0 %}
+            <h5>Инженерные тренажёры</h5>
+            <img src="/static/img/ing.png">
+        {% else %}
+            <h5>Научные симуляторы</h5>
+            <img src="/static/img/sci.png">
+        {% endif %}
+    </div>
+{% endblock %}
