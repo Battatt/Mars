@@ -3,6 +3,7 @@ from login_form import LoginForm, SuperSpecialForm
 from data import db_session
 from data.users import User
 import sqlalchemy
+import datetime
 from data.jobs import Jobs
 
 app = Flask(__name__)
@@ -93,17 +94,21 @@ def add_user(surname, name, age, position, speciality, address, email):
         print("Такой e-mail уже есть")
 
 
+def add_job(team_leader, job, work_size, collaborators, start_date, is_finished):
+    jobs = Jobs()
+    jobs.team_leader = team_leader
+    jobs.job = job
+    jobs.work_size = work_size
+    jobs.collaborators = collaborators
+    jobs.start_date = start_date
+    jobs.is_finished = is_finished
+    db_sess = db_session.create_session()
+    db_sess.add(jobs)
+    db_sess.commit()
+
 if __name__ == '__main__':
     db_session.global_init("db/mars_explorer.db")
     if input("Введите пустую строку чтобы не вводить изменения в БД:"):
-        add_user("Scott", "Ridley", 21, "captain",
-                 "research engineer", "module 1", "scott_chief@mars.org")
-        add_user("Mark", "Smith", 34, "researcher",
-                 "research engineer", "module 3 block A", "mark228@mars.org")
-        add_user("Bob", "Rock", 42, "builder",
-                 "engineer", "module -1 block D", "builders_corp1@mars.org")
-        add_user("Bill", "Fest", 37, "builder",
-                 "Rock sider", "module -4 block C", "builders_corp2@mars.org")
-        add_user("Jim", "Eier", 22, "builder",
-                 "Constructor", "module 3 block F", "main_builders_corp@mars.org")
+        add_job(1, "deployment of residential modules 1 and 2", 15, '2, 3',
+                None, False)
     app.run(port=5000, host='127.0.0.1')
