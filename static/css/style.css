@@ -8,3 +8,12 @@ h4 {
     font-size: 20px;
     margin-left: 15px;
 }
+
+#logo {
+    background-image: url("../img/MARS-2-7.png");
+     background-size: no-repeat;
+     background-position: center;
+     background-size: cover;
+     height: 70px;
+     width: 400px;
+}

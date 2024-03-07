@@ -1,5 +1,5 @@
-from flask import Flask, render_template
-
+from flask import Flask, render_template, redirect
+from login_form import LoginForm, SuperSpecialForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -46,6 +46,23 @@ def auto_asnwer():
     params["motivation"] = "Всегда хотел застрять на Марсе!"
     params["ready"] = True
     return render_template("auto_answer.html", **params)
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        f = [form.astro_id.data, form.astro_password.data, form.captain_id.data, form.captain_password.data]
+        return redirect('/success')
+    return render_template('login.html', title='Авторизация', form=form)
+
+
+@app.route("/success", methods=['GET', 'POST'])
+def success():
+    form = SuperSpecialForm()
+    if form.validate_on_submit():
+        return redirect("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+    return render_template("supersubmit.html", title="Yes?", form=form)
 
 
 if __name__ == '__main__':

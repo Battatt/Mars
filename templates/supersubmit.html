@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="formfactor">
+    <p>На Марсе опасно! Наденьте наушники!</p>
+</div>
+<form action="" method="post" novalidate>
+    {{ form.hidden_tag() }}
+    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+</form>
+{% endblock %}
