@@ -1,6 +1,9 @@
 from flask import Flask, render_template, redirect
 from login_form import LoginForm, SuperSpecialForm
 from data import db_session
+from data.users import User
+import sqlalchemy
+from data.jobs import Jobs
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -73,6 +76,34 @@ def rooms(peoples=None):
     return render_template("rooms.html", peoples=peoples, title="По Каютам!")
 
 
+def add_user(surname, name, age, position, speciality, address, email):
+    try:
+        user = User()
+        user.surname = surname
+        user.name = name
+        user.age = age
+        user.position = position
+        user.speciality = speciality
+        user.address = address
+        user.email = email
+        db_sess = db_session.create_session()
+        db_sess.add(user)
+        db_sess.commit()
+    except sqlalchemy.exc.IntegrityError as e:
+        print("Такой e-mail уже есть")
+
+
 if __name__ == '__main__':
-    db_session.global_init("db/blogs.db")
+    db_session.global_init("db/mars_explorer.db")
+    if input("Введите пустую строку чтобы не вводить изменения в БД:"):
+        add_user("Scott", "Ridley", 21, "captain",
+                 "research engineer", "module 1", "scott_chief@mars.org")
+        add_user("Mark", "Smith", 34, "researcher",
+                 "research engineer", "module 3 block A", "mark228@mars.org")
+        add_user("Bob", "Rock", 42, "builder",
+                 "engineer", "module -1 block D", "builders_corp1@mars.org")
+        add_user("Bill", "Fest", 37, "builder",
+                 "Rock sider", "module -4 block C", "builders_corp2@mars.org")
+        add_user("Jim", "Eier", 22, "builder",
+                 "Constructor", "module 3 block F", "main_builders_corp@mars.org")
     app.run(port=5000, host='127.0.0.1')
