@@ -65,5 +65,12 @@ def success():
     return render_template("supersubmit.html", title="Yes?", form=form)
 
 
+@app.route("/distribution")
+def rooms(peoples=None):
+    if peoples is None:
+        peoples = ["Пётр", "Алексей", "Михаил", "Павел", "Николай", "Александр"]
+    return render_template("rooms.html", peoples=peoples, title="По Каютам!")
+
+
 if __name__ == '__main__':
     app.run(port=5000, host='127.0.0.1')
