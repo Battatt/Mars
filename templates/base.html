@@ -30,9 +30,6 @@
 
 <!-- Begin page content -->
 <main role="main" class="container">
-    {% if current_user.is_authenticated %}
-        <a class="btn btn-success" href="/jobs">Add a job</a>
-    {% endif %}
     {% block content %}{% endblock %}
 </main>
 </body>
