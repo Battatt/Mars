@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, redirect, request, make_response
 from forms.login_form_old import LoginForm, SuperSpecialForm
 from data import db_session
 from data.jobs import Jobs
@@ -105,6 +105,22 @@ def register():
         db_sess.commit()
         return redirect('/login')
     return render_template('register.html', title='Регистрация', form=form)
+
+
+@app.route("/cookie_test")
+def cookie_test():
+    visits_count = int(request.cookies.get("visits_count", 0))
+    if visits_count:
+        res = make_response(
+            f"Вы пришли на эту страницу {visits_count + 1} раз")
+        res.set_cookie("visits_count", str(visits_count + 1),
+                       max_age=60 * 60 * 24 * 365 * 2)
+    else:
+        res = make_response(
+            "Вы пришли на эту страницу в первый раз за последние 2 года")
+        res.set_cookie("visits_count", '1',
+                       max_age=60 * 60 * 24 * 365 * 2)
+    return res
 
 
 if __name__ == '__main__':
