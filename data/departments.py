@@ -13,6 +13,3 @@ class Departament(SqlAlchemyBase):
     email = sqlalchemy.Column(sqlalchemy.String,
                               index=True, unique=True, nullable=True)
     relation = sqlalchemy.orm.relationship('User')
-
-    def __repr__(self):
-        return f"<Departament> {self.title}"

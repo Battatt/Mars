@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div align="left">
+        <h1 align="center">List of Departments</h1>
+        {% if current_user.is_authenticated %}
+            <a class="btn btn-success" href="/add_depart">Add a Department</a>
+        {% endif %}
+        <a class="btn btn-secondary" href="/">To Jobs</a>
+            {% for depart in departs %}
+            <h2>Action #{{ depart.id }}</h2>
+            <table>
+                <tr>
+                    <td class="table-header">Title of department</td>
+                    <td class="table-header">Chief</td>
+                    <td class="table-header">Members</td>
+                    <td class="table-header">Department Email</td>
+                </tr>
+                <tr>
+                    <td class="table-elem">{{ depart.title }}</td>
+                    <td class="table-elem">{{ depart.chief }}</td>
+                    <td class="table-elem">{{ depart.members  }} hours</td>
+                    <td class="table-elem">{{ depart.email }}</td>
+                </tr>
+            </table>
+            {% if current_user.is_authenticated and (current_user.id == depart.chief or current_user.id == 1) %}
+            <div>
+                <a href="/departments/{{ depart.id }}" class="btn btn-warning">
+                    Edit
+                </a>
+                <a href="/departments_delete/{{ depart.id }}" class="btn btn-danger">
+                    Delete
+                </a>
+            </div>
+
+        {% endif %}
+            {% endfor %}
+    </div>
+{% endblock %}
