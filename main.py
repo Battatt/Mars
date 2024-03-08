@@ -5,6 +5,7 @@ from data.users import User
 from forms.users import RegisterForm
 from flask_login import LoginManager, login_required, login_user, logout_user
 from forms.login_form import LoginForm
+from forms.jobs_form import JobsForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -99,7 +100,6 @@ def load_user(user_id):
     return db_sess.query(User).get(user_id)
 
 
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
@@ -120,6 +120,27 @@ def login():
 def logout():
     logout_user()
     return redirect("/")
+
+
+@app.route('/jobs',  methods=['GET', 'POST'])
+@login_required
+def add_jobs():
+    form = JobsForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        jobs = Jobs()
+        jobs.team_leader = form.team_leader.data
+        jobs.job = form.job.data
+        jobs.work_size = form.work_size.data
+        jobs.collaborators = form.collaborators.data
+        jobs.is_finished = form.is_finished.data
+        if jobs.is_finished is False:
+            jobs.end_date = None
+        db_sess.add(jobs)
+        db_sess.commit()
+        return redirect('/')
+    return render_template('jobs.html', title='Adding a Job',
+                           form=form)
 
 
 if __name__ == '__main__':
