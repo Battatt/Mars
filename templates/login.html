@@ -1,48 +1,29 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="formfactor">
-    <p id="logo">          </p>
-    <h1>Аварийный доступ</h1>
-</div>
-<form action="" method="post" novalidate>
-    {{ form.hidden_tag() }}
-    <p>
-        {{ form.astro_id.label }}<br>
-        {{ form.astro_id(class="form-control") }}<br>
-        {% for error in form.astro_id.errors %}
-    <div class="alert alert-danger" role="alert">
-        {{ error }}
-    </div>
-    {% endfor %}
-    </p>
-    <p>
-        {{ form.astro_password.label }}<br>
-        {{ form.astro_password(class="form-control", type="password") }}<br>
-        {% for error in form.astro_password.errors %}
-    <div class="alert alert-danger" role="alert">
-        {{ error }}
-    </div>
-    {% endfor %}
-    </p>
-    <p>
-        {{ form.captain_id.label }}<br>
-        {{ form.captain_id(class="form-control") }}<br>
-        {% for error in form.captain_id.errors %}
-    <div class="alert alert-danger" role="alert">
-        {{ error }}
-    </div>
-    {% endfor %}
-    </p>
-    <p>
-        {{ form.captain_password.label }}<br>
-        {{ form.captain_password(class="form-control", type="password") }}<br>
-        {% for error in form.captain_password.errors %}
-    <div class="alert alert-danger" role="alert">
-        {{ error }}
-    </div>
-    {% endfor %}
-    </p>
-    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
-</form>
+    <h1>Авторизация</h1>
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.email.label }}<br>
+            {{ form.email(class="form-control", type="email") }}<br>
+            {% for error in form.email.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.password.label }}<br>
+            {{ form.password(class="form-control", type="password") }}<br>
+            {% for error in form.password.errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+            {% endfor %}
+        </p>
+        <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
+        <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
+        <div>{{ message }}</div>
+    </form>
 {% endblock %}
