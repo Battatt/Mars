@@ -8,6 +8,8 @@ from forms.login_form import LoginForm
 from forms.jobs_form import JobsForm
 from forms.departs_form import DepartmentForm
 from data.departments import Departament
+from data.category import Category
+from forms.category_form import CategoryForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -130,11 +132,18 @@ def add_jobs():
     form = JobsForm()
     if form.validate_on_submit():
         db_sess = db_session.create_session()
+        cats = [i.id for i in db_sess.query(Category).all()]
+        if form.category.data:
+            if form.category.data not in cats:
+                abort(404)
+        else:
+            abort(404)
         jobs = Jobs()
         jobs.team_leader = form.team_leader.data
         jobs.job = form.job.data
         jobs.work_size = form.work_size.data
         jobs.collaborators = form.collaborators.data
+        jobs.category = form.category.data
         jobs.is_finished = form.is_finished.data
         if jobs.is_finished is False:
             jobs.end_date = None
@@ -157,6 +166,7 @@ def edit_jobs(id):
             form.team_leader.data = jobs.team_leader
             form.job.data = jobs.job
             form.work_size.data = jobs.work_size
+            form.category.data = jobs.category
             form.collaborators.data = jobs.collaborators
             form.is_finished.data = jobs.is_finished
         else:
@@ -165,11 +175,16 @@ def edit_jobs(id):
         db_sess = db_session.create_session()
         jobs = db_sess.query(Jobs).filter(Jobs.id == id).first()
         flag = jobs.team_leader == current_user.id or current_user.id == 1
+        cats = [i.id for i in db_sess.query(Category).all()]
+        if form.category.data:
+            if form.category.data not in cats:
+                abort(404)
         if jobs and flag:
             jobs.team_leader = form.team_leader.data
             jobs.job = form.job.data
             jobs.work_size = form.work_size.data
             jobs.collaborators = form.collaborators.data
+            jobs.category = form.category.data
             jobs.is_finished = form.is_finished.data
             db_sess.commit()
             return redirect('/')
@@ -265,6 +280,67 @@ def depart_delete(id):
     else:
         abort(404)
     return redirect('/departments')
+
+
+@app.route("/category")
+def categories():
+    db_sess = db_session.create_session()
+    cats = db_sess.query(Category).all()
+    return render_template("categories.html", title="Categories", categories=cats)
+
+
+@app.route('/add_category',  methods=['GET', 'POST'])
+@login_required
+def add_category():
+    form = CategoryForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        cat = Category()
+        cat.name = form.name.data
+        db_sess.add(cat)
+        db_sess.commit()
+        return redirect('/category')
+    return render_template('cats.html', title='Adding a Category',
+                           form=form)
+
+
+@app.route('/category/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_category(id):
+    form = CategoryForm()
+    if request.method == "GET":
+        db_sess = db_session.create_session()
+        cat = db_sess.query(Category).filter(Category.id == id).first()
+        if cat:
+            form.name.data = cat.name
+        else:
+            abort(404)
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        cat = db_sess.query(Category).filter(Category.id == id).first()
+        if cat:
+            cat.name = form.name.data
+            db_sess.commit()
+            return redirect('/categories')
+        else:
+            abort(404)
+    return render_template('cats.html',
+                           title='Category Edit',
+                           form=form
+                           )
+
+
+@app.route('/category_delete/<int:id>', methods=['GET', 'POST'])
+@login_required
+def category_delete(id):
+    db_sess = db_session.create_session()
+    cat = db_sess.query(Category).filter(Category.id == id).first()
+    if cat:
+        db_sess.delete(cat)
+        db_sess.commit()
+    else:
+        abort(404)
+    return redirect('/categories')
 
 
 if __name__ == '__main__':

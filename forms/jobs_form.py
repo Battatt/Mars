@@ -9,6 +9,7 @@ class JobsForm(FlaskForm):
     job = StringField("Job description", validators=[DataRequired()])
     work_size = IntegerField("Work size in hour", validators=[DataRequired()])
     collaborators = TextAreaField("Collaborators ID-s", validators=[DataRequired()])
+    category = IntegerField("Category", validators=[DataRequired()])
     start_date = DateTimeField("Start date")
     end_date = DateTimeField("End date")
     is_finished = BooleanField("Is finished?")
